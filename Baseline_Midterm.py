@@ -9,7 +9,8 @@ def pre_processing(filename, output_filename):
     # Traversing file line by line
     for line in file:
         # Strip every line of special characters and new line symbol
-        stripped_line = line.replace(',', '').replace('"', '').replace("'",'').replace(' .', '.').replace('...', '.').rstrip()
+        stripped_line = line.replace(',', '').replace('"', '').replace(
+            "'", '').replace(' .', '.').replace('...', '.').rstrip()
         # Save the output to another file so that we can read it later
         with open(output_filename, 'a') as f:
             f.write(' ' + stripped_line)
@@ -27,11 +28,12 @@ def find_words():
     # Traversing file line by line
     for line in file:
         # splits each line into words and removing spaces and punctuations from the input
-        line_word = line.lower().replace(',', '').replace('"', '').replace("'",'').replace('.','').replace('?','').replace('-','').replace(';', '').split(" ")
+        line_word = line.lower().replace(',', '').replace('"', '').replace("'", '').replace(
+            '.', '').replace('?', '').replace('-', '').replace(';', '').split(" ")
 
         # Adding them to list ALL words so that they can later be counted
         for w in line_word:
-            if w is not '':
+            if w != '':
                 all_words.append(w)
         # Adding word one time each to a results list which will only hold unique words
         for word in all_words:
@@ -48,8 +50,9 @@ def find_words():
         for j in range(0, len(all_words)):
             if(results[i] == all_words[j]):
                 count[i] = count[i] + 1
-    
+
     return results, count
+
 
 def process_test_data():
     file = open("processed_test.txt", "r", encoding='cp1252')
@@ -64,7 +67,7 @@ def process_test_data():
         line = line.lower().split(".")
 
         for w in line:
-            #print(len(w)) 
+            # print(len(w))
             if len(w) < 10:
                 fragment.append(w)
             elif fragment:
@@ -75,22 +78,25 @@ def process_test_data():
                 fragment = ''.join(fragment)
                 sentences.append(fragment)
                 fragment = []
-            else: 
+            else:
                 sentences.append(w)
     for each in sentences:
         split_each = each.split(' ')
         rnd = randint(0, len(split_each)-1)
         while split_each[rnd] == '':
             rnd = rnd+1
-        #print(rnd)
+        # print(rnd)
+        idx = each.find(split_each[rnd])+len(split_each[rnd])
+        each = each[0:idx]
         split_sentence.append(each.replace(split_each[rnd], '_', 1))
-        #print(split_sentence)
+        # print(split_sentence)
         word.append(split_each[rnd])
         split_each = []
 
     return split_sentence, word
 
-def check_word(results, count,split_sentence, word):
+
+def check_word(results, count, split_sentence, word):
     temp_count = []
     temp_results = []
     y = 0
@@ -101,10 +107,11 @@ def check_word(results, count,split_sentence, word):
         temp_count = list(count)
         temp_results = list(results)
 
-        line_word = line.lower().replace(',', '').replace('"', '').replace("'",'').replace('.','').replace('?','').replace('-','').replace(';', '').split(" ")
+        line_word = line.lower().replace(',', '').replace('"', '').replace("'", '').replace(
+            '.', '').replace('?', '').replace('-', '').replace(';', '').split(" ")
 
         for w in line_word:
-            if w is not '_':
+            if w != '_':
                 while w in temp_results:
                     idx = temp_results.index(w)
                     temp_results.remove(w)
@@ -119,16 +126,18 @@ def check_word(results, count,split_sentence, word):
         temp_results.remove(found_word)
         temp_count.pop(max_index)
         final = line.replace('_', found_word)
-        
+
         if found_word == word[y]:
             score = score + 1
-            print(final.replace(' ' + found_word + ' ', colored(' ' + found_word + ' ', 'green')))
+            print(final.replace(' ' + found_word,
+                  colored(' ' + found_word, 'green')))
         else:
             score = score
-            print(final.replace(' ' + found_word + ' ', colored(' ' + found_word + ' ', 'red')) + '; ' + colored('Real Word: ' + word[y], 'blue'))
+            print(final.replace(' ' + found_word, colored(' ' + found_word, 'red')) +
+                  '; ' + colored('Real Word: ' + word[y], 'blue'))
         # Increment y by 1
         y = y + 1
-    
+
     score = (score/y)*100
     return score
 
@@ -147,4 +156,4 @@ if __name__ == "__main__":
 
     # Run this to check if the word was correct
     score = check_word(results, count, split_sentence, word)
-    print('Score is '+ str(score) + '%')
+    print('Score is ' + str(score) + '%')
