@@ -1,11 +1,9 @@
-from random import randint
 from termcolor import colored
 
 
-def find_words():
-    # A file named "processed_training" the training file, will be opened with the
-    # reading mode.
-    file = open("HarryPotter_Ready.txt", "r", encoding='utf8')
+def find_words(Input_Filename):
+    # Open the input file with reading mode
+    file = open(Input_Filename, "r", encoding='utf8')
     all_words = []
     results = []
 
@@ -32,38 +30,31 @@ def find_words():
     return results, count
 
 
-def process_test_data(N):
-    file = open("HarryPotter_Ready.txt", "r", encoding='utf8')
+def process_test_data(N, Input_Filename):
+    file = open(Input_Filename, "r", encoding='utf8')
     word = []
-    split_sentence = []
     sentence = []
+    split_sentence = []
     i = 0
-    n = 0
 
     # Traversing file line by line
     for line in file:
-        # splits each line into words and removing spaces and punctuations from the input
+        # splits each line into words and appends the words into sentences
         for w in line.split():
             i = i + 1
             sentence.append(w)
-            if i == (N*n) + N:
-                n = n + 1
-                i = N*n
-                if N*n == 0:
-                    sentence.insert(N-1, '_')
-                    test_input = ' '.join(sentence[0:N])
-                    word.append(sentence[N])
-                else:
-                    sentence.insert((N*n)-1, '_')
-                    test_input = ' '.join(sentence[N*(n-1):N*n])
-                    word.append(sentence[N*n])
+            if i == N:
+                i = 0
+                sentence.insert(N-1, '_')
+                test_input = ' '.join(sentence[0:N])
+                word.append(sentence[N])
                 split_sentence.append(test_input)
-                # print(split_sentence)
+                sentence = []
 
     return split_sentence, word
 
 
-def check_word(results, count, split_sentence, word):
+def baseline_algorithm(results, count, split_sentence, word):
     temp_count = []
     temp_results = []
     y = 0
@@ -88,8 +79,7 @@ def check_word(results, count, split_sentence, word):
         # Remove this word from the count and results in case we need to loop again
         temp_results.remove(found_word)
         temp_count.pop(max_index)
-        #final = line.replace('_', found_word)
-
+        # Checks if the found word was the correct word and prints the output
         if found_word == word[y]:
             score = score + 1
             print(line.replace('_', colored(found_word, 'green')))
@@ -105,15 +95,37 @@ def check_word(results, count, split_sentence, word):
 
 
 if __name__ == "__main__":
+    # Input Filename you want to use for the data source
+    Input_Filename = "HarryPotter_Ready.txt"
+    # Set this to the number of words you would like to use as the input
+    Num_Words = 5
+
     # Run this to find the most used words in the file
-    results, count = find_words()
-    # print(results)
-    # print(count)
+    # Takes in:
+    #   Input_Filename: the input filename from preprocessing
+    # Returns:
+    #   results: the list of every word used
+    #   count: the list of how many times the word is used
+    # The Results and Count list are related such that you can use the same index for both
+    results, count = find_words(Input_Filename)
 
-    # Run this to read the test data and fill in what we think the last word should be
-    Num_Words = 10
-    split_sentence, word = process_test_data(Num_Words)
+    # Run this to split the input data into sentences with N words and the correct next word
+    # Takes in:
+    #   Num_Words + 1: the number of words you want to use (the +1 is to account for 0 indexing)
+    #   Input_Filename: the input filename from preprocessing
+    # Returns:
+    #   split_sentence: the list of input sentences for testing the algorithm
+    #   word: the list of correct words for scoring the algorithm
+    # The split_sentence and word list are related such that you can use the same index for both
+    split_sentence, word = process_test_data(Num_Words+1, Input_Filename)
 
-    # Run this to check if the word was correct
-    score = check_word(results, count, split_sentence, word)
+    # Run this to run the baseline algorithm. This algorithm will read the input sentence of N words (split sentence) and remove from the words list any word in that input (results). It will then find the word that remains in the results list with the highest count and input that at the end of the sentence. It will then check that word against the real word (word) and score the algorithm accordingly.
+    # Takes in:
+    #   results: the list of every word used
+    #   count: the list of how many times the word is used
+    #   split_sentence: the list of input sentences for testing the algorithm
+    #   word: the list of correct words for scoring the algorithm
+    # Returns:
+    #   score: the percentage that the algorithm inputed the correct word
+    score = baseline_algorithm(results, count, split_sentence, word)
     print('Score is ' + str(score) + '%')
