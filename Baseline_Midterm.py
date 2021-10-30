@@ -88,15 +88,14 @@ def check_word(results, count, split_sentence, word):
         # Remove this word from the count and results in case we need to loop again
         temp_results.remove(found_word)
         temp_count.pop(max_index)
-        final = line.replace('_', found_word)
+        #final = line.replace('_', found_word)
 
         if found_word == word[y]:
             score = score + 1
-            print(final.replace(' ' + found_word,
-                  colored(' ' + found_word, 'green')))
+            print(line.replace('_', colored(found_word, 'green')))
         else:
             score = score
-            print(final.replace(' ' + found_word, colored(' ' + found_word, 'red')) +
+            print(line.replace('_', colored(found_word, 'red')) +
                   '; ' + colored('Real Word: ' + word[y], 'blue'))
         # Increment y by 1
         y = y + 1
