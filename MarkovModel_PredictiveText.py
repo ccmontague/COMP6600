@@ -1,3 +1,4 @@
+import random
 import numpy as np
 import pandas as panda
 from nltk.tag import pos_tag
@@ -107,28 +108,30 @@ def create_probability_matrices(tagged_text):
   transition_matrix = np.zeros((len(unique_pos), len(unique_pos)), dtype='float32')
 
 # Create transition matrix
+  print('Creating transition probability matrix ...')
   for i, pos1 in enumerate(list(unique_pos)):
     for j, pos2 in enumerate(list(unique_pos)):
       tran_probability_tuple = transition_probability(pos1, pos2, tagged_text)
       tran_probability = tran_probability_tuple[0] / tran_probability_tuple[1]
       transition_matrix[i, j] = tran_probability
-  print('transition matrix: ', transition_matrix)
+  #print('transition matrix: ', transition_matrix)
  
 # Create emission matrix
+  print('Creating emission probability matrix ...')
   for i, word in enumerate(list(unique_words)):
     for j, pos in enumerate(list(unique_pos)):
       e_probability_tuple = emission_probability(word, pos, tagged_text)
       e_probability = e_probability_tuple[0] / e_probability_tuple[1]
       emission_matrix[i, j] = e_probability
-  print('emission matrix: ', emission_matrix)
+  #print('emission matrix: ', emission_matrix)
 
   return (unique_pos, transition_matrix, unique_words, emission_matrix)
 
 def hidden_markov_model(input_words, training_set, t_data_frame, e_data_frame):
   predicted_text = [input_words[0]]
   unique_tags = set()
-  prev_word = input_words[0]
-  current_word = ''
+  prev_word = training_set[len(training_set) - 1]
+  current_word = ()
 
   for tagged_pair in training_set:
     unique_tags.add(tagged_pair[1])
@@ -136,10 +139,15 @@ def hidden_markov_model(input_words, training_set, t_data_frame, e_data_frame):
 
   index = 0
   while index != len(input_words):
-    current_word = predicted_text[len(predicted_text) - 1]
+    if index == 0:
+      current_word = (predicted_text[len(predicted_text) - 1],)
+    else:
+      current_word = predicted_text[len(predicted_text) - 1]
     # Use prev word to determine most likely POS of current word 
     # i.e. use transition probability
-    pos_prob = t_data_frame.loc[prev_word].tolist()
+    print('Determining part of speech ...')
+    print('prev word: ', prev_word)
+    pos_prob = t_data_frame.loc[prev_word[1]].tolist()
     # Get max probability and index where it occurs
     max = 0
     max_index = 0
@@ -148,24 +156,27 @@ def hidden_markov_model(input_words, training_set, t_data_frame, e_data_frame):
         max = prob
         max_index = index
     pos = unique_tags[max_index]
-    print('predicted pos: ', pos)
+    print('Predicted POS: ', pos)
 
     # Tag the current predicted word with the predicted POS
-    if len(current_word) < 1:
-      current_word = (current_word, pos)
+    current_word = current_word + (pos,)
+    
     # Get words already tagged with that POS and append random
     # weighted choice of next word (given POS) to predicted text
+    print('Choosing word based on part of speech ...')
     max = 0
-    word_prob = e_data_frame.loc[current_word[1]].tolist()
-    words = e_data_frame.loc[current_word[0]].tolist()
-    prediction = np.random.choice(words, word_prob)
+    print('current word: ', current_word)
+    word_prob = e_data_frame[pos].tolist()
+    words = e_data_frame.index.tolist()
+    print('Sum of probability: ', sum(word_prob))
+    prediction = random.choices(words, weights=word_prob)
     predicted_text.append(prediction)
 
     print('predicted word: ', predicted_text[len(predicted_text) - 1])
 
-    prev_word = current_word[0]
+    prev_word = current_word
     index += 1
-    
+
   return predicted_text
 
 def main():
@@ -179,10 +190,10 @@ def main():
 	# For creating readable table out of probability matrices
   trans_matrix_frame = panda.DataFrame(transition_matrix, columns=list(matrix_tags), index=list(matrix_tags))
   e_matrix_frame = panda.DataFrame(emission_matrix, columns=list(matrix_tags), index=list(matrix_data[2]))
-  
+  print('emission frame: ', e_matrix_frame)
 	# Test Hidden Markov Model on validation set
   next_word_prediction = hidden_markov_model(data_tuple[2], data_tuple[0], trans_matrix_frame, e_matrix_frame)
-  print('Predicted word: ', next_word_prediction)
+  print('Predicted words: ', next_word_prediction)
   
 
 if __name__ == "__main__":
