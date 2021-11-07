@@ -16,7 +16,7 @@ import os
 """
 
 
-file = open("metamorphosis_clean.txt", "r", encoding = "utf8")
+file = open("HarryPotter_Ready.txt", "r", encoding = "utf8")
 lines = []
 
 for i in file:
