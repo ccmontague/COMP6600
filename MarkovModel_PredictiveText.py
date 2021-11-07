@@ -165,29 +165,7 @@ def hidden_markov_model(input_words, training_set, t_data_frame, e_data_frame):
 
     prev_word = current_word[0]
     index += 1
-
-## end
-  #for key, word in enumerate(input_words):
-  #  probability = []
-   # for tag in unique_tags:
-      #print('key: ', key)
-      #print('word: ', word)
-      #print('tag: ', tag)
-    #  transition_prob = t_data_frame.loc[unique_tags[key % len(unique_tags)], tag]
-      #print('transition prob: ', transition_prob)
-    # Compute emission and state probabilities
-    #prob_tuple = emission_probability(input_words[key], tag, training_set)
-		# Divide # of times word is tagged with part of speech by the # of that part of speech tag
-  #  emission_prob = prob_tuple[0] / prob_tuple[1]
-   # state_prob = emission_prob * transition_prob
-    #probability.append(state_prob)
-
-#  max_prob = max(probability)
-  # Determine the state that has the highest probability
- # state_maximum = unique_tags[probability.index(max_prob)]
-  #state.append(state_maximum)
-  #print('State: ', state)
-  #print('list(zip(input_words, state): ', list(zip(input_words, state)))
+    
   return predicted_text
 
 def main():
