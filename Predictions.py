@@ -1,5 +1,6 @@
 # Importing the Libraries
 
+import tensorflow as tf
 from tensorflow.keras.models import load_model
 import numpy as np
 import pickle
@@ -20,8 +21,9 @@ def Predict_Next_Words(model, tokenizer, text):
         sequence = tokenizer.texts_to_sequences([text])[0]
         sequence = np.array(sequence)
         
-        preds = model.predict_classes(sequence)
-#        print(preds)
+        ##preds = model.predict_classes(sequence)
+        preds = np.argmax(model.predict(sequence), axis=-1)
+        print(preds)
         predicted_word = ""
         
         for key, value in tokenizer.word_index.items():
@@ -47,7 +49,13 @@ def Predict_Next_Words(model, tokenizer, text):
 # text4 = "stop the script"
 
 
-phrases = ["at the dull", "collection of textile", "what a strenuous"]
+##phrases = ["at the dull", "collection of textile", "what a strenuous"]
+
+phrases = [
+    "mr and mrs dursley of",
+    "any neck although he did",
+    "their greatest fear was that",
+]
 
 for text in phrases:
     print(text)

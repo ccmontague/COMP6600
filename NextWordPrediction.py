@@ -8,15 +8,13 @@ import pickle
 import numpy as np
 import os
 
-"""
-    Dataset: http://www.gutenberg.org/cache/epub/5200/pg5200.txt
-    Remove all the unnecessary data and label it as Metamorphosis-clean.
-    The starting and ending lines should be as follows.
-
-"""
+os.environ["PATH"] += os.pathsep + 'C:/Program Files/Graphviz/bin'
+#os.environ["PATH"] += os.pathsep + 'C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.2/bin'
+#os.environ["PATH"] += os.pathsep + 'C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.2/extras/CUPTI/lib64'
+#os.environ["PATH"] += os.pathsep + 'C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.2/include'
 
 
-file = open("HarryPotter_Ready.txt", "r", encoding = "utf8")
+file = open("data.txt", "r", encoding = "utf8")
 lines = []
 
 for i in file:
@@ -96,10 +94,10 @@ model.add(Dense(vocab_size, activation="softmax"))
 
 model.summary()
 
-#from tensorflow import keras
-#from keras.utils.vis_utils import plot_model
+from tensorflow import keras
+from tensorflow.keras.utils import plot_model
 
-#keras.utils.plot_model(model, to_file='model.png', show_layer_names=True)
+plot_model(model, to_file='model.png', show_layer_names=True)
 
 from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.callbacks import ReduceLROnPlateau
@@ -121,6 +119,7 @@ model.fit(X, y, epochs=150, batch_size=64, callbacks=[checkpoint, reduce, tensor
 # tensorboard --logdir="./logsnextword1"
 # http://DESKTOP-U3TSCVT:6006/
 
-##from IPython.display import Image 
-##pil_img = Image(filename='graph1.png')
+from IPython.display import Image 
+pil_img = Image(filename='model.png')
 ##display(pil_img)
+pil_img
