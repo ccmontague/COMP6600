@@ -3,7 +3,7 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.layers import Embedding, LSTM, Dense
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.utils import to_categorical
-from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.optimizers import Adam, RMSprop
 import pickle
 import numpy as np
 import os
@@ -14,7 +14,11 @@ os.environ["PATH"] += os.pathsep + 'C:/Program Files/Graphviz/bin'
 #os.environ["PATH"] += os.pathsep + 'C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.2/include'
 
 
-file = open("data.txt", "r", encoding = "utf8")
+physical_devices = tf.config.list_physical_devices('GPU')
+tf.config.experimental.set_memory_growth(physical_devices[0], enable=True)
+
+
+file = open("HarryPotter_Ready.txt", "r", encoding = "utf8")
 lines = []
 
 for i in file:
@@ -51,7 +55,7 @@ tokenizer = Tokenizer()
 tokenizer.fit_on_texts([data])
 
 # saving the tokenizer for predict function.
-pickle.dump(tokenizer, open('tokenizer1.pkl', 'wb'))
+pickle.dump(tokenizer, open('tokenizer2.pkl', 'wb'))
 
 sequence_data = tokenizer.texts_to_sequences([data])[0]
 sequence_data[:10]
@@ -103,17 +107,22 @@ from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.callbacks import ReduceLROnPlateau
 from tensorflow.keras.callbacks import TensorBoard
 
-checkpoint = ModelCheckpoint("nextword1.h5", monitor='loss', verbose=1,
+checkpoint = ModelCheckpoint("nextword2.h5", monitor='loss', verbose=1,
     save_best_only=True, mode='auto')
 
 reduce = ReduceLROnPlateau(monitor='loss', factor=0.2, patience=3, min_lr=0.0001, verbose = 1)
 
-logdir='logsnextword1'
+logdir='logsnextword2'
 tensorboard_Visualization = TensorBoard(log_dir=logdir)
 
-model.compile(loss="categorical_crossentropy", optimizer=Adam(lr=0.001))
+optimizer1 = RMSprop(learning_rate=0.01)
+optimizer2 = Adam(lr=0.001)
+model.compile(loss="categorical_crossentropy", optimizer=optimizer2, metrics=['accuracy'])
 
-model.fit(X, y, epochs=150, batch_size=64, callbacks=[checkpoint, reduce, tensorboard_Visualization])
+history = model.fit(X, y, epochs=150, batch_size=64, callbacks=[checkpoint, reduce, tensorboard_Visualization])
+
+model.save("nextword2.h5")
+pickle.dump(history.history, open("history2.p", "wb"))
 
 # https://stackoverflow.com/questions/26649716/how-to-show-pil-image-in-ipython-notebook
 # tensorboard --logdir="./logsnextword1"
