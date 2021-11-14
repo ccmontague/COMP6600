@@ -14,8 +14,8 @@ os.environ["PATH"] += os.pathsep + 'C:/Program Files/Graphviz/bin'
 #os.environ["PATH"] += os.pathsep + 'C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.2/include'
 
 
-physical_devices = tf.config.list_physical_devices('GPU')
-tf.config.experimental.set_memory_growth(physical_devices[0], enable=True)
+#physical_devices = tf.config.list_physical_devices('GPU')
+#tf.config.experimental.set_memory_growth(physical_devices[0], enable=True)
 
 
 file = open("HarryPotter_Ready.txt", "r", encoding = "utf8")
@@ -24,8 +24,8 @@ lines = []
 for i in file:
     lines.append(i)
     
-print("The First Line: ", lines[0])
-print("The Last Line: ", lines[-1])
+#print("The First Line: ", lines[0])
+#print("The Last Line: ", lines[-1])
 
 data = ""
 
@@ -33,23 +33,11 @@ for i in lines:
     data = ' '. join(lines)
     
 data = data.replace('\n', '').replace('\r', '').replace('\ufeff', '')
-data[:360]
 
 import string
-
-translator = str.maketrans(string.punctuation, ' '*len(string.punctuation)) #map punctuation to space
-new_data = data.translate(translator)
-
-new_data[:500]
-
-z = []
-
-for i in data.split():
-    if i not in z:
-        z.append(i)
-        
-data = ' '.join(z)
-data[:500]
+ 
+data = data.split()
+data = ' '.join(data)
 
 tokenizer = Tokenizer()
 tokenizer.fit_on_texts([data])
@@ -65,8 +53,8 @@ print(vocab_size)
 
 sequences = []
 
-for i in range(10, len(sequence_data)):
-    words = sequence_data[i-10:i+1]
+for i in range(5, len(sequence_data)):
+    words = sequence_data[i-5:i+1]
     sequences.append(words)
     
 print("The Length of sequences are: ", len(sequences))
@@ -77,8 +65,8 @@ X = []
 y = []
 
 for i in sequences:
-    X.append(i[0:10])
-    y.append(i[10])
+    X.append(i[0:5])
+    y.append(i[5])
     
 X = np.array(X)
 y = np.array(y)
@@ -90,7 +78,7 @@ y = to_categorical(y, num_classes=vocab_size)
 y[:5]
 
 model = Sequential()
-model.add(Embedding(vocab_size, 10, input_length=10))
+model.add(Embedding(vocab_size, 10, input_length=5))
 model.add(LSTM(1000, return_sequences=True))
 model.add(LSTM(1000))
 model.add(Dense(1000, activation="relu"))
