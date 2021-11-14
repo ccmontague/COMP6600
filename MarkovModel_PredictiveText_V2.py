@@ -177,7 +177,7 @@ def hidden_markov_model(input_words, training_set, t_data_frame, e_data_frame):
   return predicted_text
 
 def main():
-  tagged_data = tag_parts_of_speech('HarryPotter_Small.txt')
+  tagged_data = tag_parts_of_speech('HarryPotter_Ready.txt')
 	# Data Tuple contains (training_set, training_set_size, validation_set, validation_set_size)
   data_tuple = split_sets(tagged_data)
   matrix_data = create_probability_matrices(data_tuple[0])
