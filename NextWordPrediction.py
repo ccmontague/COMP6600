@@ -65,8 +65,8 @@ print(vocab_size)
 
 sequences = []
 
-for i in range(1, len(sequence_data)):
-    words = sequence_data[i-1:i+1]
+for i in range(10, len(sequence_data)):
+    words = sequence_data[i-10:i+1]
     sequences.append(words)
     
 print("The Length of sequences are: ", len(sequences))
@@ -77,8 +77,8 @@ X = []
 y = []
 
 for i in sequences:
-    X.append(i[0])
-    y.append(i[1])
+    X.append(i[0:10])
+    y.append(i[10])
     
 X = np.array(X)
 y = np.array(y)
@@ -90,7 +90,7 @@ y = to_categorical(y, num_classes=vocab_size)
 y[:5]
 
 model = Sequential()
-model.add(Embedding(vocab_size, 10, input_length=1))
+model.add(Embedding(vocab_size, 10, input_length=10))
 model.add(LSTM(1000, return_sequences=True))
 model.add(LSTM(1000))
 model.add(Dense(1000, activation="relu"))
@@ -119,7 +119,7 @@ optimizer1 = RMSprop(learning_rate=0.01)
 optimizer2 = Adam(lr=0.001)
 model.compile(loss="categorical_crossentropy", optimizer=optimizer2, metrics=['accuracy'])
 
-history = model.fit(X, y, epochs=150, batch_size=64, callbacks=[checkpoint, reduce, tensorboard_Visualization])
+history = model.fit(X, y, epochs=50, batch_size=64, callbacks=[checkpoint, reduce, tensorboard_Visualization])
 
 model.save("nextword2.h5")
 pickle.dump(history.history, open("history2.p", "wb"))

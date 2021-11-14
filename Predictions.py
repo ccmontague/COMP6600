@@ -16,6 +16,7 @@ def Predict_Next_Words(model, tokenizer, text):
         using our model to predict and return the predicted word.
     
     """
+    """
     for i in range(3):
         sequence = tokenizer.texts_to_sequences([text])[0]
         sequence = np.array(sequence)
@@ -31,7 +32,21 @@ def Predict_Next_Words(model, tokenizer, text):
                 break
         
         #print(predicted_word)
-        return predicted_word
+        return predicted_word 
+    """
+
+    sequence = tokenizer.texts_to_sequences([text])
+    sequence = np.array(sequence)
+    preds = np.argmax(model.predict(sequence))
+    predicted_word = ""
+
+    for key, value in tokenizer.word_index.items():
+        if value == preds:
+            predicted_word = key
+            break
+
+    print(predicted_word)
+    return predicted_word
 
 def process_test_data(N, Input_Filename):
     file = open(Input_Filename, "r", encoding='utf8')
