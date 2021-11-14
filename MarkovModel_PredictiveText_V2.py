@@ -142,8 +142,8 @@ def hidden_markov_model(input_words, training_set, t_data_frame, e_data_frame):
     current_word = (predicted_text[len(predicted_text) - 1],)
     # Use prev word to determine most likely POS of current word 
     # i.e. use transition probability
-    print('Determining part of speech ...')
-    print('prev word: ', prev_word)
+    #print('Determining part of speech ...')
+    #print('prev word: ', prev_word)
     pos_prob = t_data_frame.loc[prev_word[1]].tolist()
     # Get max probability and index where it occurs
     max = 0
@@ -153,23 +153,23 @@ def hidden_markov_model(input_words, training_set, t_data_frame, e_data_frame):
         max = prob
         max_index = index
     pos = unique_tags[max_index]
-    print('Predicted POS: ', pos)
+    #print('Predicted POS: ', pos)
 
     # Tag the current predicted word with the predicted POS
     current_word = current_word + (pos,)
     
     # Get words already tagged with that POS and append random
     # weighted choice of next word (given POS) to predicted text
-    print('Choosing word based on part of speech ...')
+    #print('Choosing word based on part of speech ...')
     max = 0
-    print('current word: ', current_word)
+    #print('current word: ', current_word)
     word_prob = e_data_frame[pos].tolist()
     words = e_data_frame.index.tolist()
-    print('Sum of probability: ', sum(word_prob))
+    #print('Sum of probability: ', sum(word_prob))
     prediction = random.choices(words, weights=word_prob)
-    predicted_text.append(prediction)
+    predicted_text.extend(prediction)
 
-    print('predicted word: ', predicted_text[len(predicted_text) - 1])
+    #print('predicted word: ', predicted_text[len(predicted_text) - 1])
 
     prev_word = current_word
     idx += 1
@@ -191,6 +191,16 @@ def main():
 	# Test Hidden Markov Model on validation set
   next_word_prediction = hidden_markov_model(data_tuple[2], data_tuple[0], trans_matrix_frame, e_matrix_frame)
   print('Predicted words: ', next_word_prediction)
+
+  # Calculate the Score of the HMM
+  score = 0
+  for i in range(0,len(next_word_prediction)-1):
+    if next_word_prediction[i] == data_tuple[2][i]:
+      score = score + 1
+    else:
+      score = score
+  score = score/len(next_word_prediction) * 100
+  print('The final score is: ' + str(score) + '%')
   
 
 if __name__ == "__main__":
