@@ -1,4 +1,5 @@
 import random
+from nltk import data
 import numpy as np
 import pandas as panda
 from nltk.tag import pos_tag
@@ -128,7 +129,7 @@ def create_probability_matrices(tagged_text):
   return (unique_pos, transition_matrix, unique_words, emission_matrix)
 
 def hidden_markov_model(input_words, training_set, t_data_frame, e_data_frame):
-  predicted_text = [input_words[0]]
+  predicted_text = []
   unique_tags = set()
   prev_word = training_set[len(training_set) - 1]
   current_word = ()
@@ -139,7 +140,7 @@ def hidden_markov_model(input_words, training_set, t_data_frame, e_data_frame):
 
   idx = 0
   while idx != len(input_words):
-    current_word = (predicted_text[len(predicted_text) - 1],)
+    current_word = (input_words[idx],)
     # Use prev word to determine most likely POS of current word 
     # i.e. use transition probability
     #print('Determining part of speech ...')
@@ -161,7 +162,6 @@ def hidden_markov_model(input_words, training_set, t_data_frame, e_data_frame):
     # Get words already tagged with that POS and append random
     # weighted choice of next word (given POS) to predicted text
     #print('Choosing word based on part of speech ...')
-    max = 0
     #print('current word: ', current_word)
     word_prob = e_data_frame[pos].tolist()
     words = e_data_frame.index.tolist()
@@ -187,10 +187,15 @@ def main():
 	# For creating readable table out of probability matrices
   trans_matrix_frame = panda.DataFrame(transition_matrix, columns=list(matrix_tags), index=list(matrix_tags))
   e_matrix_frame = panda.DataFrame(emission_matrix, columns=list(matrix_tags), index=list(matrix_data[2]))
-  print('emission frame: ', e_matrix_frame)
+  trans_matrix_frame.to_excel('TransitionMatrix.xlsx')
+  e_matrix_frame.to_excel('EmissionMatrix.xlsx')
+  #print("Training:", data_tuple[0])
+  #print("Testing: " , data_tuple[2])
+  #print('transition frame: ', trans_matrix_frame)
+  #print('emission frame: ', e_matrix_frame)
 	# Test Hidden Markov Model on validation set
   next_word_prediction = hidden_markov_model(data_tuple[2], data_tuple[0], trans_matrix_frame, e_matrix_frame)
-  print('Predicted words: ', next_word_prediction)
+  #print('Predicted words: ', next_word_prediction)
 
   # Calculate the Score of the HMM
   score = 0
