@@ -10,42 +10,12 @@ physical_devices = tf.config.list_physical_devices('GPU')
 tf.config.experimental.set_memory_growth(physical_devices[0], enable=True)
 
 def Predict_Next_Words(model, tokenizer, text):
-    """
-        In this function we are using the tokenizer and models trained
-        and we are creating the sequence of the text entered and then
-        using our model to predict and return the predicted word.
-    
-    """
-    """
-    for i in range(3):
-        sequence = tokenizer.texts_to_sequences([text])[0]
-        sequence = np.array(sequence)
-        
-        ##preds = model.predict_classes(sequence)
-        preds = np.argmax(model.predict(sequence), axis=-1)
-        #print(preds)
-        predicted_word = ""
-        
-        for key, value in tokenizer.word_index.items():
-            if value == preds:
-                predicted_word = key
-                break
-        
-        #print(predicted_word)
-        return predicted_word 
-    """
-
+    # create sequence for prediction
     sequence = tokenizer.texts_to_sequences([text])
     sequence = np.array(sequence)
     preds = np.argmax(model.predict(sequence))
     predicted_word = ""
 
-    for key, value in tokenizer.word_index.items():
-        if value == preds:
-            predicted_word = key
-            break
-
-    print(predicted_word)
     return predicted_word
 
 def process_test_data(N, Input_Filename):
@@ -101,6 +71,7 @@ def rnn_algorithm(N, split_sentences, word):
     score = (score/y)*100
     return score
 
+# main loop
 if __name__ == "__main__":
     Input_Filename = "HarryPotter_Ready.txt"
     Num_Words = 5
