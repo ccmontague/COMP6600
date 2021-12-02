@@ -1,0 +1,11 @@
+tensorflow>=2.7.0
+tensorflow-gpu>=2.7.0
+tensorboard
+keras
+tensorflow-estimator
+numpy
+termcolor
+pickle
+IPython.display
+pydot
+graphviz
