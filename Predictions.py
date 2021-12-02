@@ -15,6 +15,11 @@ def Predict_Next_Words(model, tokenizer, text):
     sequence = np.array(sequence)
     preds = np.argmax(model.predict(sequence))
     predicted_word = ""
+    
+    for key, value in tokenizer.word_index.items():
+        if value == preds:
+            predicted_word = key
+            break
 
     return predicted_word
 
