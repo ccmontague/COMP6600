@@ -104,19 +104,46 @@ logdir='logsnextword2'
 tensorboard_Visualization = TensorBoard(log_dir=logdir)
 
 optimizer1 = RMSprop(learning_rate=0.01)
-optimizer2 = Adam(lr=0.001)
+optimizer2 = Adam(learning_rate=0.001)
 model.compile(loss="categorical_crossentropy", optimizer=optimizer2, metrics=['accuracy'])
 
-history = model.fit(X, y, epochs=50, batch_size=64, callbacks=[checkpoint, reduce, tensorboard_Visualization])
+history = model.fit(X, y, epochs=40, batch_size=64, validation_split=0.20, callbacks=[checkpoint, reduce, tensorboard_Visualization])
 
 model.save("nextword2.h5")
 pickle.dump(history.history, open("history2.p", "wb"))
+
+
+import matplotlib.pyplot as plt
+import pickle
+from keras.models import Sequential, load_model
+
+model = load_model('nextword2.h5')
+history = pickle.load(open('history2.p', 'rb'))
+
+plt.subplot(211)
+plt.title('model accuracy')
+plt.plot(history['accuracy'])
+plt.plot(history['val_accuracy'])
+plt.ylabel('accuracy')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+
+
+plt.subplot(212)
+plt.title('model loss')
+plt.plot(history['loss'])
+plt.plot(history['val_loss'])
+plt.ylabel('loss')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+
+plt.tight_layout()
 
 # https://stackoverflow.com/questions/26649716/how-to-show-pil-image-in-ipython-notebook
 # tensorboard --logdir="./logsnextword1"
 # http://DESKTOP-U3TSCVT:6006/
 
 from IPython.display import Image 
-pil_img = Image(filename='model.png')
+#pil_img = Image(filename='model.png')
 ##display(pil_img)
-pil_img
+#pil_img
