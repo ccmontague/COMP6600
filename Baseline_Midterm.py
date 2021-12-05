@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 
 # Separate the input text into the training set and validation sets
 # based on 80:20 ratio.
+
+
 def split_sets(Input_Filename):
     with open(Input_Filename, 'r') as input_text:
         input_string = input_text.read()
@@ -11,12 +13,13 @@ def split_sets(Input_Filename):
         validation_set = []
         total_count = len(words)
         training_count = int(total_count * 0.8)
-        for word in words[:training_count]: 
+        for word in words[:training_count]:
             training_set.append(word)
         for pair in words[training_count:]:
             validation_set.append(pair)
 
     return (training_set, validation_set)
+
 
 def find_words(training_set):
     results = []
@@ -46,7 +49,7 @@ def process_test_data(N, testing_set):
     split_sentence = []
     i = 0
     # Traversing file line by line
-    for f in range(0,len(testing_set)): 
+    for f in range(0, len(testing_set)):
         sentence.append(testing_set[f])
         i = i + 1
         if i == N:
@@ -100,12 +103,42 @@ def baseline_algorithm(results, count, split_sentence, word):
     return score
 
 
+def plot_most_common(results, count):
+    top_ten_words = []
+    top_ten_count = []
+    # Make temporary lists that can be editted in this loop
+    temp_count = list(count)
+    temp_results = list(results)
+    for i in range(0, 10):
+        # Find the most common word and its index number
+        max_value = max(temp_count)
+        top_ten_count.append(max_value)
+        max_index = temp_count.index(max_value)
+        # Use the index number to find the most frequent word in the list
+        found_word = temp_results[max_index]
+        top_ten_words.append(found_word)
+        # Remove this word from the count and results in case we need to loop again
+        temp_results.remove(found_word)
+        temp_count.pop(max_index)
+    # Plot the results
+    x_pos = [i for i, _ in enumerate(top_ten_words)]
+
+    plt.bar(x_pos, top_ten_count, color='green')
+    plt.xlabel("Words")
+    plt.ylabel("Count")
+    plt.title("Top 10 Most Frequent Words Found")
+
+    plt.xticks(x_pos, top_ten_words)
+
+    plt.show()
+
+
 if __name__ == "__main__":
     # Input Filename you want to use for the data source
     Input_Filename = "HarryPotter_Ready.txt"
     # Set this to the number of words you would like to use as the input
     # Ex: [1, 2, 3, 4, 5] will run the algorithm using 1 - 5 words as the input and then plot the results
-    Num_Words = [1]
+    Num_Words = [5]
     # Creates an empty score array
     score_array = []
 
@@ -126,6 +159,9 @@ if __name__ == "__main__":
         #   count: the list of how many times the word is used
         # The Results and Count list are related such that you can use the same index for both
         results, count = find_words(training_set)
+
+        # Run this function to create a bar chart of the most common words found
+        plot_most_common(results, count)
 
         # Run this to split the input data into sentences with N words and the correct next word
         # Takes in:
@@ -149,7 +185,7 @@ if __name__ == "__main__":
         print('Score using N = ' + str(n) + ' words is ' + str(score) + '%')
         score_array.append(score)
     if len(Num_Words) > 1:
-        plt.plot(Num_Words,score_array)
+        plt.plot(Num_Words, score_array)
         plt.title('Score Results by Number of Words in Input')
         plt.xlabel('Number of Words')
         plt.ylabel('Score (Percent)')
