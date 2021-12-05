@@ -16,6 +16,10 @@ from tensorflow.keras.callbacks import TensorBoard
 from tensorflow import keras
 from tensorflow.keras.utils import plot_model
 
+import matplotlib.pyplot as plt
+import pickle
+from keras.models import Sequential, load_model
+
 os.environ["PATH"] += os.pathsep + 'C:/Program Files/Graphviz/bin'
 #os.environ["PATH"] += os.pathsep + 'C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.2/bin'
 #os.environ["PATH"] += os.pathsep + 'C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.2/extras/CUPTI/lib64'
@@ -121,14 +125,10 @@ history = model.fit(X, y, epochs=40, batch_size=64, validation_split=0.20, callb
 model.save("nextword2.h5")
 pickle.dump(history.history, open("history2.p", "wb"))
 
-
-import matplotlib.pyplot as plt
-import pickle
-from keras.models import Sequential, load_model
-
 model = load_model('nextword2.h5')
 history = pickle.load(open('history2.p', 'rb'))
 
+# plot the accuracy and loss graphs
 plt.subplot(211)
 plt.title('model accuracy')
 plt.plot(history['accuracy'])
@@ -153,7 +153,7 @@ plt.tight_layout()
 # http://DESKTOP-U3TSCVT:6006/
 
 from IPython.display import Image 
-pil_img = Image(filename='model.png')
+#pil_img = Image(filename='model.png')
 
 # display(pil_img)
-pil_img
+#pil_img

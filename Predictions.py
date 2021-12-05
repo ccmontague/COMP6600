@@ -46,10 +46,10 @@ def process_test_data(N, Input_Filename):
 
     return split_sentence, word
 
-def rnn_algorithm(N, split_sentences, word):
+def rnn_algorithm(N, split_sentences, word, model_path, tokenizer_path):
     # Load the model and tokenizer
-    model = load_model('nextword2.h5')
-    tokenizer = pickle.load(open('tokenizer2.pkl', 'rb'))
+    model = load_model(model_path)
+    tokenizer = pickle.load(open(tokenizer_path, 'rb'))
     y = 0
     score = 0
     
@@ -81,6 +81,8 @@ if __name__ == "__main__":
     Input_Filename = "HarryPotter_Ready.txt"
     Num_Words = 5
     split_sentence, word = process_test_data(Num_Words+1, Input_Filename)
+    model_path = './nextword2.h5'
+    tokenizer_path = 'tokenizer2.pkl'
     
-    score = rnn_algorithm(Num_Words, split_sentence, word)
+    score = rnn_algorithm(Num_Words, split_sentence, word, model_path, tokenizer_path)
     print('Score is ' + str(score) + '%')
