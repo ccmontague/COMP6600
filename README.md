@@ -24,12 +24,12 @@ LSTM Model
 6. Open Predictions.py and update the Num_Words for number of words and the paths to the tokenizer and model.
 7. Run command 'python Predictions.py'.
 
-Hidden Marcov Model (HMM) Algorithm
+Hidden Markov Model (HMM) Algorithm
 1. Run preprocessing.py to format the data such that it can be used by the models.
 2. Ensure that a Harry_Potter_Ready.txt file was created in the folder
-3. Run the HiddenMarcovModel_Final.py
+3. Run the HiddenMarkovModel_Final.py
 
-N-Gram Marcov Model
+N-Gram Markov Model
 1. Run preprocessing.py to format the data such that it can be used by the models.
 2. Ensure that a Harry_Potter_Ready.txt file was created in the folder
-3. Run N_Gram_Marcov.py
+3. Run N_Gram_Markov.py
