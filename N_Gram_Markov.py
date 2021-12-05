@@ -66,7 +66,7 @@ def adjust_prob(dictionary):
 
     return dictionary
 
-def Marcov_Model(N_Gram_Dict, Single_Gram_Dict, test_input, N):
+def Markov_Model(N_Gram_Dict, Single_Gram_Dict, test_input, N):
     predicted = []
     line = []
     i = 0
@@ -134,7 +134,7 @@ def main():
     words, correct_words = get_test_set(validation_set, N)
     
     # Take in the N word input from the validation set and predict the next word
-    prediction = Marcov_Model(N_gram, Single_gram, words, N)
+    prediction = Markov_Model(N_gram, Single_gram, words, N)
     print('The predicted words are: ', prediction)
     print('The correct words are: ', correct_words)
 
