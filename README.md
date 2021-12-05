@@ -18,7 +18,11 @@ Baseline Algorithm
 LSTM Model
 1. Run preprocessing.py to format the data such that it can be used by the models.
 2. Ensure that a Harry_Potter_Ready.txt file was created in the folder
-3. ...
+3. Run command 'python -r requirements.txt'
+4. Open NextWodPrediction.py and update the input size, epochs, and batch size as desired.
+5. Run command 'python NextWordPrediction.py' to generate the tokenizer and model.
+6. Open Predictions.py and update the Num_Words for number of words and the paths to the tokenizer and model.
+7. Run command 'python Predictions.py'.
 
 Hidden Marcov Model (HMM) Algorithm
 1. Run preprocessing.py to format the data such that it can be used by the models.
